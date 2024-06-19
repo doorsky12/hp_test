@@ -15,6 +15,7 @@ body {
 .clocks {
     display: flex;
     justify-content: center;
+    gap: 20px;
 }
 
 .clock {
