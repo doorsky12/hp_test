@@ -5,16 +5,14 @@ document.addEventListener("DOMContentLoaded", () => {
         "tokyo": "Asia/Tokyo"
     };
 
-    const corsProxy = "https://cors-anywhere.herokuapp.com/";
-
     async function fetchTime(timeZone) {
         try {
-            const response = await fetch(`${corsProxy}https://worldtimeapi.org/api/timezone/${timeZone}`);
+            const response = await fetch(`https://timeapi.io/api/Time/current/zone?timeZone=${timeZone}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            return data.datetime;
+            return data.dateTime; // 이 필드를 확인하세요
         } catch (error) {
             console.error(`Error fetching time for ${timeZone}:`, error);
             return null;
