@@ -6,12 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     async function fetchTime(timeZone) {
-        const response = await fetch(`https://worldtimeapi.org/api/timezone/${timeZone}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        try {
+            const response = await fetch(`https://worldtimeapi.org/api/timezone/${timeZone}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data.datetime;
+        } catch (error) {
+            console.error(`Error fetching time for ${timeZone}:`, error);
+            return null;
         }
-        const data = await response.json();
-        return data.datetime;
     }
 
     function updateTime() {
@@ -21,17 +26,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             fetchTime(timeZone)
                 .then(dateTimeString => {
-                    const dateTime = new Date(dateTimeString);
-                    const formattedTime = dateTime.toLocaleTimeString("en-US", {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false
-                    });
-                    timeElement.textContent = formattedTime;
+                    if (dateTimeString) {
+                        const dateTime = new Date(dateTimeString);
+                        const formattedTime = dateTime.toLocaleTimeString("en-US", {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        });
+                        timeElement.textContent = formattedTime;
+                    } else {
+                        timeElement.textContent = "Error";
+                    }
                 })
                 .catch(error => {
-                    console.error(`Error fetching time for ${city}:`, error);
+                    console.error(`Error updating time for ${city}:`, error);
                     timeElement.textContent = "Error";
                 });
         });
